@@ -4,7 +4,8 @@ import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 
 const App = () => {
-  const [view, setView] = useState('comingSoon'); // Initial view
+  // Change initial view to 'register'
+  const [view, setView] = useState('register'); // Initial view is set to 'register'
   const [particles, setParticles] = useState([]);
 
   useEffect(() => {

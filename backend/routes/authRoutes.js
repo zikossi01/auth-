@@ -56,6 +56,7 @@ router.post(
     body('email').isEmail().withMessage('Email invalide.'),
     body('password').not().isEmpty().withMessage('Le mot de passe est requis.')
   ],
+  
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -63,9 +64,11 @@ router.post(
     }
 
     const { email, password } = req.body;
+    console.log("test")
 
     try {
       // Check if user exists
+    console.log("test")
       const user = await User.findOne({ email });
       if (!user) {
         return res.status(400).json({ message: 'Utilisateur non trouvé' });

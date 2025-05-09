@@ -9,7 +9,6 @@ const LoginPage = ({ setView }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add your login logic here, for example:
     try {
       const response = await fetch('http://127.0.0.1:5000/api/auth/login', {
         method: 'POST',
@@ -18,10 +17,16 @@ const LoginPage = ({ setView }) => {
         },
         body: JSON.stringify({ email, password }),
       });
+
       if (!response.ok) {
         throw new Error('Invalid credentials');
       }
-      // Handle successful login (e.g., redirect to another page)
+
+      const data = await response.json();
+      // Optional: Save token if needed
+      localStorage.setItem('token', data.token); 
+
+      setView('comingSoon'); // Redirect to Coming Soon after login
     } catch (error) {
       setErrorMessage(error.message);
     }

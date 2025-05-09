@@ -38,7 +38,7 @@ const ComingSoon = ({ setView }) => {
           onClick={() => setView('login')}
           className="btn mt-8 px-8 py-3 rounded-full bg-cyan-300 text-black font-medium shadow-[0_0_10px_#00ffe0] relative overflow-hidden"
         >
-          Notify Me
+          Logout
         </button>
       </div>
 

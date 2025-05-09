@@ -5,29 +5,61 @@ const RegisterPage = ({ setView }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [focusedName, setFocusedName] = useState(false); // track focus state
-  const [focusedEmail, setFocusedEmail] = useState(false); // track focus state
-  const [focusedPassword, setFocusedPassword] = useState(false); // track focus state
-  const [focusedConfirmPassword, setFocusedConfirmPassword] = useState(false); // track focus state
+  const [focusedName, setFocusedName] = useState(false);
+  const [focusedEmail, setFocusedEmail] = useState(false);
+  const [focusedPassword, setFocusedPassword] = useState(false);
+  const [focusedConfirmPassword, setFocusedConfirmPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    if (password !== confirmPassword) {
+      setErrorMessage("Les mots de passe ne correspondent pas.");
+      return;
+    }
+
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      if (!response.ok) {
+        const { message } = await response.json();
+        throw new Error(message || 'Erreur lors de l’inscription');
+      }
+
+      setSuccessMessage("Compte créé avec succès !");
+      setTimeout(() => setView('login'), 2000); // Redirect after 2s
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
 
   return (
     <div className="flex items-center justify-center h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] font-orbitron">
-      {/* Container */}
       <div className="bg-white/5 p-10 rounded-xl backdrop-blur-md border border-white/10 text-white w-full max-w-md shadow-[0_0_30px_rgba(0,255,255,0.2)]">
         <h2 className="text-center text-cyan-300 text-2xl mb-6">Créer un compte</h2>
-        
-        {/* Form */}
-        <form>
-          {/* Full Name Input */}
-          <div className="relative mb-6 input-group">
+
+        {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
+        {successMessage && <p className="text-green-400 text-center">{successMessage}</p>}
+
+        <form onSubmit={handleSubmit}>
+          {/* Name Field */}
+          <div className="relative mb-6">
             <input
               type="text"
               id="name"
               name="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              onFocus={() => setFocusedName(true)}  // set focus state to true
-              onBlur={() => setFocusedName(name !== '')}  // reset focus state based on value
+              onFocus={() => setFocusedName(true)}
+              onBlur={() => setFocusedName(name !== '')}
               required
               placeholder=" "
               className="w-full p-3 bg-transparent border border-cyan-300 rounded text-white outline-none focus:ring-2 focus:ring-cyan-400"
@@ -42,16 +74,16 @@ const RegisterPage = ({ setView }) => {
             </label>
           </div>
 
-          {/* Email Input */}
-          <div className="relative mb-6 input-group">
+          {/* Email Field */}
+          <div className="relative mb-6">
             <input
               type="email"
               id="email"
               name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              onFocus={() => setFocusedEmail(true)}  // set focus state to true
-              onBlur={() => setFocusedEmail(email !== '')}  // reset focus state based on value
+              onFocus={() => setFocusedEmail(true)}
+              onBlur={() => setFocusedEmail(email !== '')}
               required
               placeholder=" "
               className="w-full p-3 bg-transparent border border-cyan-300 rounded text-white outline-none focus:ring-2 focus:ring-cyan-400"
@@ -66,16 +98,16 @@ const RegisterPage = ({ setView }) => {
             </label>
           </div>
 
-          {/* Password Input */}
-          <div className="relative mb-6 input-group">
+          {/* Password Field */}
+          <div className="relative mb-6">
             <input
               type="password"
               id="password"
               name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              onFocus={() => setFocusedPassword(true)}  // set focus state to true
-              onBlur={() => setFocusedPassword(password !== '')}  // reset focus state based on value
+              onFocus={() => setFocusedPassword(true)}
+              onBlur={() => setFocusedPassword(password !== '')}
               required
               placeholder=" "
               className="w-full p-3 bg-transparent border border-cyan-300 rounded text-white outline-none focus:ring-2 focus:ring-cyan-400"
@@ -90,16 +122,16 @@ const RegisterPage = ({ setView }) => {
             </label>
           </div>
 
-          {/* Confirm Password Input */}
-          <div className="relative mb-6 input-group">
+          {/* Confirm Password Field */}
+          <div className="relative mb-6">
             <input
               type="password"
               id="confirmPassword"
               name="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              onFocus={() => setFocusedConfirmPassword(true)}  // set focus state to true
-              onBlur={() => setFocusedConfirmPassword(confirmPassword !== '')}  // reset focus state based on value
+              onFocus={() => setFocusedConfirmPassword(true)}
+              onBlur={() => setFocusedConfirmPassword(confirmPassword !== '')}
               required
               placeholder=" "
               className="w-full p-3 bg-transparent border border-cyan-300 rounded text-white outline-none focus:ring-2 focus:ring-cyan-400"
@@ -110,7 +142,7 @@ const RegisterPage = ({ setView }) => {
                 focusedConfirmPassword || confirmPassword ? 'top-[-10px] left-2 text-cyan-300 text-xs' : ''
               }`}
             >
-              Confirmer le mot de passe
+              Confirmez le mot de passe
             </label>
           </div>
 
@@ -123,21 +155,13 @@ const RegisterPage = ({ setView }) => {
           </button>
         </form>
 
-        {/* Footer */}
         <div className="text-center text-sm mt-6">
-          Déjà un compte ?{' '}
+          Déjà inscrit ?{' '}
           <button
             className="text-cyan-300 underline"
             onClick={() => setView('login')}
           >
             Se connecter
-          </button>
-          <br />
-          <button
-            className="text-xs text-gray-300 mt-2 underline"
-            onClick={() => setView('comingSoon')}
-          >
-            Revenir à l'accueil
           </button>
         </div>
       </div>

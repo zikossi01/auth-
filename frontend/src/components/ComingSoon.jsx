@@ -1,28 +1,133 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const ComingSoon = ({ setView }) => {
+  useEffect(() => {
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 50; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      const size = Math.random() * 6 + 2;
+      Object.assign(particle.style, {
+        width: `${size}px`,
+        height: `${size}px`,
+        left: `${Math.random() * 100}%`,
+        animationDuration: `${3 + Math.random() * 5}s`,
+        background: Math.random() > 0.5 ? '#00ffe0' : '#0ff',
+      });
+      container.appendChild(particle);
+    }
+  }, []);
+
   return (
-    <div className="flex items-center justify-center h-screen bg-gradient-to-tr from-black via-zinc-900 to-neutral-900 relative text-white overflow-hidden">
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        {/* Particles logic */}
-      </div>
-      <div className="z-10 p-10 text-center bg-black/70 border-2 border-cyan-300 rounded-xl shadow-[0_0_20px_#00ffe088,0_0_40px_#00ffe044] animate-fadeInUp">
+    <div className="flex items-center justify-center h-screen bg-gradient-to-tr from-black via-zinc-900 to-neutral-900 relative overflow-hidden text-white">
+      {/* Particles container */}
+      <div id="particles" className="absolute inset-0 z-0"></div>
+
+      {/* Main Content with a slightly bigger frame */}
+      <div className="container text-center p-8 sm:p-10 bg-black/70 border-2 border-cyan-300 rounded-xl shadow-[0_0_20px_#00ffe088,0_0_40px_#00ffe044] z-10 animate-fadeInUp max-w-lg">
         <h1
+          className="glitch-title text-4xl sm:text-5xl font-bold text-cyan-300 tracking-wide relative"
           data-text="Coming Soon"
-          className="text-4xl font-bold relative text-cyan-300 tracking-wide glitch-title"
         >
           Coming Soon
         </h1>
-        <p className="text-gray-300 mt-5 text-lg animate-fadeIn opacity-0">
+        <p className="text-gray-300 mt-5 text-lg opacity-0 animate-fadeIn delay-[500ms]">
           We’re working hard behind the scenes to bring you something amazing.
         </p>
         <button
           onClick={() => setView('login')}
-          className="btn relative z-10 mt-8 px-8 py-3 rounded-full bg-cyan-300 text-black font-medium shadow-[0_0_10px_#00ffe0] hover:after:scale-125 transition-transform"
+          className="btn mt-8 px-8 py-3 rounded-full bg-cyan-300 text-black font-medium shadow-[0_0_10px_#00ffe0] relative overflow-hidden"
         >
           Notify Me
         </button>
       </div>
+
+      {/* Styles */}
+      <style>{`
+        .glitch-title::before,
+        .glitch-title::after {
+          content: attr(data-text);
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          overflow: hidden;
+        }
+        .glitch-title::before {
+          color: #f0f;
+          left: 2px;
+          animation: glitchTop 2s infinite linear;
+        }
+        .glitch-title::after {
+          color: #0ff;
+          left: -2px;
+          animation: glitchBottom 2s infinite linear;
+        }
+
+        .particle {
+          position: absolute;
+          border-radius: 9999px;
+          opacity: 0.2;
+          animation: floatUp linear infinite;
+        }
+
+        @keyframes glitchTop {
+          0% { clip-path: inset(0 0 90% 0); }
+          100% { clip-path: inset(0 0 0% 0); }
+        }
+
+        @keyframes glitchBottom {
+          0% { clip-path: inset(90% 0 0 0); }
+          100% { clip-path: inset(0% 0 0 0); }
+        }
+
+        @keyframes floatUp {
+          0% {
+            transform: translateY(100vh) scale(0.5);
+            opacity: 0.2;
+          }
+          100% {
+            transform: translateY(-10vh) scale(1.2);
+            opacity: 0;
+          }
+        }
+
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fadeInUp {
+          animation: fadeInUp 1.2s ease-out forwards;
+        }
+
+        .animate-fadeIn {
+          animation: fadeIn 2s ease-out forwards;
+        }
+
+        .btn::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border-radius: 9999px;
+          background: rgba(255, 255, 255, 0.1);
+          z-index: -1;
+          transform: scale(0);
+          transition: transform 0.3s ease;
+        }
+
+        .btn:hover::after {
+          transform: scale(1.2);
+        }
+      `}</style>
     </div>
   );
 };

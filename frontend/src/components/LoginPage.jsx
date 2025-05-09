@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const LoginPage = () => {
+const LoginPage = ({ setView }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [focusedEmail, setFocusedEmail] = useState(false);
@@ -93,7 +93,7 @@ const LoginPage = () => {
           Nouveau chez 404.js ?{' '}
           <button
             className="text-cyan-300 underline"
-            onClick={() => {/* handle navigation to register page */}}
+            onClick={() => setView('register')}
           >
             Créer un compte
           </button>
